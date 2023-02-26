@@ -1,40 +1,35 @@
 use bevy::prelude::*;
 
+// Set colors.
+const BALL_COLOR: Color = Color::rgb(0.3, 0.3, 0.7);
+//const PADDLE_COLOR: Color = Color::rgb(0.3, 0.3, 0.7);
+//const BACKGROUND_COLOR: Color = Color::rgb(0.7, 0.9, 1.3);
+
+const BALL_SIZE: Vec3 = Vec3::new(20.0, 20.0, 0.0);
+
 fn main() {
-    App::new()
-        .add_plugins(DefaultPlugins)
-        .add_plugin(HelloPlugin)
-        .run();
+   App::new()
+       .add_plugins(DefaultPlugins)
+       .add_startup_system(setup)
+       .run();
 }
 
-pub struct HelloPlugin;
-
-impl Plugin for HelloPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_startup_system(add_people)
-            .add_system(hello_world)
-            .add_system(greet_people);
-    }
+fn setup(mut commands: Commands) {
+    commands.spawn(Camera2dBundle::default());
+    spawn_ball(&mut commands);
 }
 
-#[derive(Component)]
-struct Person;
-
-#[derive(Component)]
-struct Name(String);
-
-fn hello_world() {
-    println!("hello world!");
-}
-
-fn add_people(mut commands: Commands) {
-    commands.spawn((Person, Name("Elaina Proctor".to_string())));
-    commands.spawn((Person, Name("Renzo Hume".to_string())));
-    commands.spawn((Person, Name("Zayna Nieves".to_string())));
-}
-
-fn greet_people(query: Query<&Name, With<Person>>) {
-    for name in query.iter() {
-        println!("hello {}!", name.0);
-    }
+fn spawn_ball(commands: &mut Commands) {
+    commands.spawn(SpriteBundle {
+        sprite: Sprite {
+            color: BALL_COLOR,
+            ..default()
+        },
+        transform: Transform {
+            translation: Vec3::new(0.0, 0.0, 0.0),
+            scale: BALL_SIZE,
+            ..default()
+        },
+        ..default()
+    });
 }
